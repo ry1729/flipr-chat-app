@@ -8,6 +8,12 @@ const generateToken = require('../utils/generateToken');
 const registerUser = asyncHandler(async (req, res) => {
     const { username, email, password, avatar } = req.body;
 
+    // Basic input validation
+    if (!username || !email || !password) {
+        res.status(400);
+        throw new Error('Please enter all required fields');
+    }
+
     const userExists = await User.findOne({ $or: [{ email }, { username }] });
 
     if (userExists) {
@@ -41,6 +47,12 @@ const registerUser = asyncHandler(async (req, res) => {
 // @access  Public
 const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
+
+    // Basic input validation
+    if (!email || !password) {
+        res.status(400);
+        throw new Error('Please provide email and password');
+    }
 
     const user = await User.findOne({ email });
 

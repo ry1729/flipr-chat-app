@@ -76,8 +76,15 @@ server.listen(PORT, () => {
 io.on("connection", (socket) => {
     console.log("Connected to Socket.IO");
 
-    socket.on("setup", (userData) => {
+    socket.on("setup", async (userData) => {
         socket.join(userData._id);
+        socket.userId = userData._id; // store user ID on socket object
+
+        // Mark user as online
+        await User.findByIdAndUpdate(userData._id, {
+            onlineStatus: "online",
+        });
+
         socket.emit("connected");
     });
 
@@ -91,18 +98,22 @@ io.on("connection", (socket) => {
 
     socket.on("new message", (newMessageReceived) => {
         var chat = newMessageReceived.chat;
-
         if (!chat.users) return console.log("Chat.users not defined");
 
         chat.users.forEach((user) => {
-            if (user._id == newMessageReceived.sender._id) return;
-
+            if (user._id === newMessageReceived.sender._id) return;
             socket.in(user._id).emit("message received", newMessageReceived);
         });
     });
 
-    socket.off("setup", () => {
+    // Handle user disconnecting
+    socket.on("disconnect", async () => {
+        if (socket.userId) {
+            await User.findByIdAndUpdate(socket.userId, {
+                onlineStatus: "offline",
+                lastSeen: new Date(),
+            });
+        }
         console.log("USER DISCONNECTED");
-        socket.leave(userData._id);
     });
 });
