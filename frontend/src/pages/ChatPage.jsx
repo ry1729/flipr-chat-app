@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { io } from 'socket.io-client';
-import axios from 'axios';
+import api from '../utils/api';
 import { toast } from 'react-toastify'; // Import toast for notifications
 
 let socket; // Global socket instance
@@ -80,7 +80,7 @@ function ChatPage() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/chats`, config);
+      const { data } = await api.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/chats`, config);
       setAllChats(data);
       if (data.length > 0) {
         // Auto-select the first chat for convenience
@@ -106,7 +106,7 @@ function ChatPage() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/messages/${chatId}`, config);
+      const { data } = await api.get(`${import.meta.env.VITE_REACT_APP_API_BASE_URL}/messages/${chatId}`, config);
       setMessages(data);
     } catch (error) {
       toast.error('Failed to load messages.');
@@ -139,7 +139,7 @@ function ChatPage() {
         const messageContent = newMessage.trim();
         setNewMessage(""); // Clear input immediately
 
-        const { data } = await axios.post(
+        const { data } = await api.post(
           `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/messages`,
           {
             content: messageContent,
@@ -177,7 +177,7 @@ function ChatPage() {
         },
       };
 
-      const { data } = await axios.post(
+      const { data } = await api.post(
         `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/messages`,
         formData,
         config

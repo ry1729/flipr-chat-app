@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../../utils/api'
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -16,7 +16,7 @@ function Login({ toggleForm }) {
     setLoading(true);
     setError('');
     try {
-      const { data } = await axios.post(
+      const { data } = await api.post(
         `${import.meta.env.VITE_REACT_APP_API_BASE_URL}/auth/login`,
         { email, password }
       );

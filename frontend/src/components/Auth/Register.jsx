@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';;
 import { toast } from 'react-toastify'; // For toast notifications
 
 function Register() {
@@ -46,8 +46,8 @@ function Register() {
       };
 
       // Make the API call to your backend registration endpoint
-      const { data } = await axios.post(
-        '/api/auth/register', // This will be proxied to http://localhost:5000/api/auth/register
+      const { data } = await api.post(
+        '/auth/register', // This will be proxied to http://localhost:5000/api/auth/register
         { username, email, password }, // Data to send in the request body
         config // Request headers
       );
