@@ -27,6 +27,13 @@ app.options('*', cors(corsOptions)); // Handle preflight requests
 
 app.use(express.json()); // To accept JSON data in the body
 
+// --- ADD THIS GLOBAL LOGGER ---
+app.use((req, res, next) => {
+    console.log(`Incoming Request: ${req.method} ${req.originalUrl}`);
+    console.log('Request Body:', req.body); // Useful for POST requests
+    next(); // Pass control to the next middleware/route handler
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
     pingTimeout: 60000, // Disconnects after 60 seconds of inactivity
@@ -64,6 +71,14 @@ app._router.stack.forEach(function(middleware){
 app.use(notFound);
 app.use(errorHandler);
 
+app.use((err, req, res, next) => {
+    console.error('SERVER ERROR:', err.stack); // Log the full stack trace
+    const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+    res.status(statusCode).json({
+        message: err.message,
+        stack: process.env.NODE_ENV === 'production' ? null : err.stack, // Show stack in dev, hide in prod
+    });
+});
 
 
 const PORT = process.env.PORT || 5000;

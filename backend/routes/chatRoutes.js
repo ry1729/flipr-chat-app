@@ -13,7 +13,7 @@ router.route('/').get(protect, fetchChats);
 
 // Route to create a new group chat
 // This is a POST request.
-// router.route('/group').post(protect, createGroupChat);
+router.route('/group').post(protect, createGroupChat);
 
 // (Optional) Routes for renaming group, adding/removing from group
 // router.route('/group/rename').put(protect, renameGroup);
