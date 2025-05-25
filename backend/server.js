@@ -17,7 +17,7 @@ connectDB();
 
 // CORS Configuration (Crucial for frontend-backend communication)
 const corsOptions = {
-    origin: process.env.FRONTEND_URL, // Replace with your frontend URL
+    origin: 'http://localhost:5173', // Replace with your frontend URL
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true, // Allow cookies and authentication headers
     optionsSuccessStatus: 204,
