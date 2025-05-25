@@ -5,6 +5,7 @@ const connectDB = require('./config/db');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const User = require('./models/User'); 
 const messageRoutes = require('./routes/messageRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const path = require('path');
@@ -87,23 +88,60 @@ server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// Socket.IO Integration
+// Socket.IO Integration - Enhanced with Online Status & Better Typing
+
 io.on("connection", (socket) => {
     console.log("Connected to Socket.IO");
 
-    socket.on("setup", (userData) => {
+    // Enhanced setup with online status
+    socket.on("setup", async (userData) => {
         socket.join(userData._id);
+        
+        // Store user info in socket for later reference
+        socket.userId = userData._id;
+        socket.username = userData.username;
+        
+        // Update user online status
+        try {
+            await User.findByIdAndUpdate(userData._id, {
+                onlineStatus: 'online',
+                lastSeen: new Date()
+            });
+            
+            console.log(`User ${userData.username} is now online`);
+            
+            // Notify all other users that this user is online
+            socket.broadcast.emit('user online', {
+                userId: userData._id,
+                username: userData.username,
+                onlineStatus: 'online'
+            });
+        } catch (error) {
+            console.error('Error updating user online status:', error);
+        }
+        
         socket.emit("connected");
     });
 
+    // Join chat room
     socket.on("join chat", (chatId) => {
         socket.join(chatId);
         console.log("User joined chat: " + chatId);
     });
 
-    socket.on("typing", (chatId) => socket.in(chatId).emit("typing"));
-    socket.on("stop typing", (chatId) => socket.in(chatId).emit("stop typing"));
+    // Enhanced typing indicators with user info
+    socket.on("typing", (chatId) => {
+        socket.in(chatId).emit("typing", {
+            userId: socket.userId,
+            username: socket.username
+        });
+    });
+    
+    socket.on("stop typing", (chatId) => {
+        socket.in(chatId).emit("stop typing");
+    });
 
+    // Handle new messages
     socket.on("new message", (newMessageReceived) => {
         var chat = newMessageReceived.chat;
 
@@ -116,8 +154,46 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.off("setup", () => {
+    // Handle message reactions
+    socket.on("message reaction", (reactionData) => {
+        const { chat, messageId, updatedMessage } = reactionData;
+
+        if (!chat.users) return console.log("Chat.users not defined");
+
+        // Broadcast reaction update to all users in the chat
+        chat.users.forEach((user) => {
+            socket.in(user._id).emit("reaction received", {
+                messageId: messageId,
+                updatedMessage: updatedMessage
+            });
+        });
+    });
+    // Enhanced disconnect handling - mark user as offline
+    socket.on("disconnect", async () => {
         console.log("USER DISCONNECTED");
-        socket.leave(userData._id);
+        
+        try {
+            // Use stored user info from socket
+            if (socket.userId) {
+                const user = await User.findByIdAndUpdate(socket.userId, {
+                    onlineStatus: 'offline',
+                    lastSeen: new Date()
+                }, { new: true });
+
+                if (user) {
+                    console.log(`User ${user.username} is now offline`);
+                    
+                    // Notify all users that this user is offline
+                    socket.broadcast.emit('user offline', {
+                        userId: user._id,
+                        username: user.username,
+                        onlineStatus: 'offline',
+                        lastSeen: user.lastSeen
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('Error updating user offline status:', error);
+        }
     });
 });

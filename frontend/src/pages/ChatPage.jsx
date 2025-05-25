@@ -7,6 +7,7 @@ import ChatBox from '../components/Chat/ChatBox';
 import { useAuth } from '../context/AuthContext'; // Fixed import path
 import { useChat } from '../context/ChatContext';
 import '../styles/ChatPage.css';
+import ThemeToggle from '../components/common/ThemeToggle'; // Import ThemeToggle
 
 function ChatPage() {
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ function ChatPage() {
     // User authentication check on component mount
     useEffect(() => {
         if (!user) {
-            navigate('/'); // Navigate to home, not /login
+            navigate('/');
         }
     }, [user, navigate]);
 
@@ -31,10 +32,13 @@ function ChatPage() {
         <div className="chat-page-container">
             <div className="chat-page-header">
                 <h2>Flipr Chat App</h2>
-                {user && <span className="logged-in-user">Logged in as: {user.username}</span>}
-                <button onClick={handleLogout} className="logout-button">
-                    Logout
-                </button>
+                <div className="header-controls">
+                    {user && <span className="logged-in-user">Logged in as: {user.username}</span>}
+                    <ThemeToggle />
+                    <button onClick={handleLogout} className="logout-button">
+                        Logout
+                    </button>
+                </div>
             </div>
 
             <div className="chat-content-area">

@@ -141,20 +141,28 @@ function MyChats() {
                 <h3>My Chats</h3>
             </div>
 
-            {/* User Search Section */}
+            
+            {/* User Search Section - FIXED */}
             <div className="chat-search-box">
+            <div className="search-input-container">
                 <input
-                    type="text"
-                    placeholder="Search users..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyPress={(e) => {
-                        if (e.key === 'Enter') handleSearch();
-                    }}
+                type="text"
+                placeholder="Search users..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyPress={(e) => {
+                    if (e.key === 'Enter') handleSearch();
+                }}
+                className="search-input"
                 />
-                <button onClick={handleSearch} disabled={loadingSearch}>
-                    {loadingSearch ? 'Searching...' : 'Go'}
-                </button>
+            </div>
+            <button 
+                onClick={handleSearch} 
+                disabled={loadingSearch}
+                className="search-button"
+            >
+                {loadingSearch ? 'Searching...' : 'Search'}
+            </button>
             </div>
 
             {/* Display Search Results */}

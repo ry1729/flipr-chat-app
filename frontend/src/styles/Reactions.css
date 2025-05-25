@@ -1,4 +1,4 @@
-/* src/styles/Reactions.css */
+/* src/styles/Reactions.css - Updated with Theme Variables */
 
 /* Reaction Picker Overlay */
 .reaction-picker-overlay {
@@ -7,7 +7,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--bg-modal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -16,12 +16,13 @@
 }
 
 .reaction-picker {
-  background: white;
+  background: var(--bg-primary);
   border-radius: 15px;
   padding: 1.5rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow-heavy);
   animation: slideUp 0.3s ease;
   min-width: 300px;
+  border: 1px solid var(--border-light);
 }
 
 .reaction-picker-header {
@@ -30,12 +31,12 @@
   align-items: center;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--border-light);
 }
 
 .reaction-picker-header span {
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
 }
 
 .close-picker {
@@ -43,7 +44,7 @@
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-  color: #666;
+  color: var(--text-secondary);
   padding: 0;
   width: 30px;
   height: 30px;
@@ -55,8 +56,8 @@
 }
 
 .close-picker:hover {
-  background: #f1f3f4;
-  color: #333;
+  background: var(--hover-light);
+  color: var(--text-primary);
 }
 
 .reaction-emojis {
@@ -67,7 +68,7 @@
 }
 
 .reaction-emoji-btn {
-  background: #f8f9fa;
+  background: var(--bg-secondary);
   border: 2px solid transparent;
   border-radius: 50%;
   width: 50px;
@@ -82,9 +83,9 @@
 
 .reaction-emoji-btn:hover {
   transform: scale(1.2);
-  border-color: #667eea;
-  background: #e3f2fd;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  border-color: var(--primary-color);
+  background: var(--primary-light);
+  box-shadow: 0 5px 15px var(--primary-light);
 }
 
 .reaction-emoji-btn:active {
@@ -103,8 +104,8 @@
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: var(--reaction-bg);
+  border: 1px solid var(--reaction-border);
   border-radius: 15px;
   padding: 0.25rem 0.5rem;
   font-size: 0.8rem;
@@ -115,21 +116,21 @@
 }
 
 .reaction-pill:hover {
-  background: rgba(102, 126, 234, 0.2);
-  border-color: rgba(102, 126, 234, 0.4);
+  background: var(--primary-light);
+  border-color: var(--primary-border);
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  box-shadow: var(--shadow-light);
 }
 
 .reaction-pill.user-reacted {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: #667eea;
+  background: var(--reaction-active);
+  color: var(--text-inverse);
+  border-color: var(--primary-color);
   font-weight: 600;
 }
 
 .reaction-pill.user-reacted:hover {
-  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+  background: var(--primary-hover);
 }
 
 .reaction-emoji {
@@ -158,8 +159,8 @@
 }
 
 .add-reaction-btn {
-  background: rgba(102, 126, 234, 0.1);
-  border: 1px solid rgba(102, 126, 234, 0.2);
+  background: var(--reaction-bg);
+  border: 1px solid var(--reaction-border);
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -177,8 +178,8 @@
 }
 
 .add-reaction-btn:hover {
-  background: rgba(102, 126, 234, 0.2);
-  border-color: rgba(102, 126, 234, 0.4);
+  background: var(--primary-light);
+  border-color: var(--primary-border);
   transform: scale(1.1);
 }
 
