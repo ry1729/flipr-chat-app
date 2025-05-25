@@ -1,0 +1,330 @@
+/* HomePageGraphics.css */
+
+/* Mock Device - Main structure */
+.mock-device {
+  width: 280px;
+  height: 550px;
+  background-color: #222; /* Darker bezel */
+  border-radius: 40px;
+  box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 25px 70px rgba(0, 0, 0, 0.4);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px; /* Slightly thicker bezel */
+  transition: transform 0.5s ease-in-out; /* For subtle animation on larger screens */
+}
+
+/* Subtle 3D tilt on larger screens */
+@media (min-width: 992px) {
+  .mock-device {
+    transform: rotateX(5deg) rotateY(-5deg) translateZ(20px);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 
+                20px 20px 80px rgba(0, 0, 0, 0.4),
+                -10px -10px 50px rgba(0, 0, 0, 0.2);
+  }
+}
+
+
+.device-notch {
+  width: 110px; /* Slightly wider notch */
+  height: 28px;
+  background-color: #1a1a1a;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  position: absolute;
+  top: 0;
+  z-index: 10;
+}
+
+.device-screen {
+  width: calc(100% - 24px);
+  height: calc(100% - 24px);
+  background: linear-gradient(to bottom right, #f8fafc, #edf2f7); /* Subtle screen gradient */
+  border-radius: 28px; /* Screen rounded corners */
+  overflow: hidden;
+  position: relative;
+  padding: 18px; /* More inner padding for chat */
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* More space between bubbles */
+  justify-content: flex-end;
+  align-items: flex-start; /* Align all bubbles to left initially */
+}
+
+/* Chat Bubbles */
+.graphic-chat-bubble {
+  max-width: 85%; /* Slightly wider bubbles */
+  padding: 10px 14px;
+  border-radius: 20px; /* More rounded */
+  font-size: 0.9em;
+  line-height: 1.4;
+  word-wrap: break-word;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  animation: fadeInPop 0.5s ease-out forwards;
+}
+
+.graphic-incoming {
+  background-color: #e0e0e0;
+  align-self: flex-start;
+  color: var(--text-color-dark);
+  border-bottom-left-radius: 6px; /* Sharper point */
+  position: relative;
+  padding-left: 48px; /* Space for avatar */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.graphic-outgoing {
+  background-color: var(--primary-color);
+  color: var(--text-color-light);
+  align-self: flex-end; /* Align outgoing to right */
+  border-bottom-right-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+}
+
+/* Avatar for incoming messages */
+.graphic-avatar-mini {
+  width: 32px; /* Slightly larger avatar */
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  left: 6px; /* Closer to edge */
+  bottom: 0;
+  border: 2px solid var(--card-bg); /* White border */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+/* Placeholder avatar images (replace with actual image paths) */
+.graphic-avatar-1 {
+  background-image: url('https://via.placeholder.com/32/7b68ee/ffffff?text=U1'); /* User 1 */
+}
+
+.graphic-avatar-2 {
+  background-image: url('https://via.placeholder.com/32/4682b4/ffffff?text=U2'); /* User 2 */
+}
+
+/* File Transfer Bubble */
+.graphic-file-transfer {
+  background-color: #d4edda; /* Muted green for file transfer */
+  color: #333;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom-left-radius: 6px;
+  padding-left: 14px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.file-icon-mock {
+  width: 22px;
+  height: 22px;
+  background-color: #5cb85c; /* A distinct green for the icon */
+  border-radius: 5px;
+  display: inline-flex; /* Use flex for centering internal icon */
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.file-icon-mock::before {
+  content: '📄'; /* Document emoji */
+  font-size: 16px;
+  line-height: 1; /* Adjust line height for emoji */
+}
+
+.file-name {
+  font-weight: 600;
+  font-size: 0.95em;
+  color: var(--text-color-dark);
+}
+
+.transfer-progress {
+  font-size: 0.8em;
+  color: #666;
+  font-weight: 500;
+}
+
+/* Typing Indicator */
+.graphic-typing-indicator {
+  align-self: flex-start;
+  display: flex;
+  gap: 5px; /* More space between dots */
+  background-color: #e0e0e0;
+  padding: 8px 15px; /* Larger padding */
+  border-radius: 20px;
+  border-bottom-left-radius: 6px;
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  animation: fadeInPop 0.5s ease-out forwards;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.graphic-typing-indicator span {
+  width: 7px; /* Larger dots */
+  height: 7px;
+  background-color: #888;
+  border-radius: 50%;
+  animation: dotBlink 1.2s infinite ease-in-out both; /* Faster blink */
+}
+
+.graphic-typing-indicator span:nth-child(1) { animation-delay: 0.3s; }
+.graphic-typing-indicator span:nth-child(2) { animation-delay: 0.45s; }
+.graphic-typing-indicator span:nth-child(3) { animation-delay: 0.6s; }
+
+
+/* Input Bar Mock */
+.mock-input-bar {
+  width: calc(100% - 30px); /* Adjust for screen padding */
+  background-color: var(--card-bg);
+  border-radius: 25px; /* More rounded */
+  padding: 10px 18px; /* Larger padding */
+  display: flex;
+  align-items: center;
+  gap: 12px; /* More space between elements */
+  box-shadow: 0 -3px 15px rgba(0, 0, 0, 0.08); /* More prominent shadow */
+  margin-top: auto;
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+}
+
+.mock-input-placeholder {
+  color: #a0a0a0; /* Lighter grey */
+  flex-grow: 1;
+  font-size: 0.95em;
+}
+
+.mock-icon {
+  width: 30px; /* Larger icons */
+  height: 30px;
+  background-color: #e8e8e8; /* Lighter grey background */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1em;
+  color: #666; /* Darker icon color */
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.mock-icon:hover {
+  transform: translateY(-1px);
+}
+
+.mock-icon-attachment {
+  background-color: #a0c4ff;
+  color: #fff;
+  &::before { content: '📎'; font-size: 18px; }
+}
+
+.mock-icon-send {
+  background-color: var(--primary-color);
+  color: var(--text-color-light);
+  &::before { content: '🚀'; font-size: 18px; }
+}
+
+/* Floating Background Elements */
+.floating-element {
+  position: absolute;
+  opacity: 0.5; /* Slightly less opaque */
+  animation: floatAndFade 12s infinite ease-in-out; /* Slower and smoother */
+  border-radius: 50%;
+  filter: blur(2px); /* Subtle blur effect */
+}
+
+/* Responsive visibility for floating elements - hide some on small screens */
+@media (max-width: 767px) {
+  .element-wifi, .element-check {
+    display: none; /* Hide some elements on smaller screens to reduce clutter */
+  }
+}
+
+.element-wifi {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.12);
+  top: 8%;
+  left: 12%;
+  animation-delay: 1.5s;
+  &::before { content: '📡'; font-size: 28px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+}
+
+.element-emoji {
+  width: 70px;
+  height: 70px;
+  background-color: rgba(255, 255, 255, 0.18);
+  bottom: 10%;
+  right: 10%;
+  animation-delay: 4s;
+  &::before { content: '💬'; font-size: 35px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+}
+
+.element-check {
+  width: 50px;
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.1);
+  top: 25%;
+  right: 20%;
+  animation-delay: 7s;
+  &::before { content: '✅'; font-size: 24px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+}
+
+/* Animations */
+@keyframes fadeInPop {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered animation delays remain the same as before */
+.delay-1 { animation-delay: 0.5s; }
+.delay-2 { animation-delay: 1.2s; } /* Slightly faster second delay */
+.delay-3 { animation-delay: 2.0s; }
+.delay-4 { animation-delay: 2.8s; }
+.delay-5 { animation-delay: 3.6s; }
+.delay-6 { animation-delay: 4.4s; }
+
+
+@keyframes dotBlink {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes floatAndFade {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.5;
+  }
+  25% {
+    transform: translate(10px, -15px) rotate(5deg) scale(1.05);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(0, -30px) rotate(0deg) scale(1);
+    opacity: 0.7;
+  }
+  75% {
+    transform: translate(-10px, -15px) rotate(-5deg) scale(0.95);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.5;
+  }
+}

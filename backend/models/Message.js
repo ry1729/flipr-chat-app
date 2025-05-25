@@ -22,11 +22,24 @@ const messageSchema = mongoose.Schema(
             default: 'text', // Default to 'text' for regular messages
             enum: ['text', 'image', 'video', 'file', 'audio'], // Define allowed message types
         },
-    // --- End of new field ---
-        // You might also consider adding:
-        // reactions: [{ user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, emoji: String }],
-        // originalFileName: { type: String } // Good for files where content is a URL
-   
+        // ⭐ New field for reactions ⭐
+        reactions: [
+            {
+                user: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true,
+                },
+                type: {
+                    type: String,
+                    required: true,
+                }, // e.g., '👍', '❤️', '😂', '🔥' - store the actual emoji or a shortcode
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                },
+            },
+        ],
     },
     { timestamps: true }
 );
