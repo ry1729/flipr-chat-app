@@ -1,6 +1,7 @@
 const express = require('express');
 const { sendMessage, allMessages, addReaction } = require('../controllers/messageController'); // Import the new addReaction
 const { protect } = require('../middleware/authMiddleware'); // Import the protect middleware
+const { toggleReaction } = require('../controllers/reactionController'); // NEW
 const upload = require('../middleware/uploadMiddleware'); // Import the upload middleware
 const router = express.Router();
 

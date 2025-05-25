@@ -22,28 +22,28 @@ const messageSchema = mongoose.Schema(
             default: 'text', // Default to 'text' for regular messages
             enum: ['text', 'image', 'video', 'file', 'audio'], // Define allowed message types
         },
-        // ⭐ New field for reactions ⭐
+        // Consolidated and corrected reactions field
         reactions: [
             {
-                user: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'User',
-                    required: true,
-                },
-                type: {
+                emoji: { // The emoji character or shortcode (e.g., '👍', '😂', '🔥')
                     type: String,
                     required: true,
-                }, // e.g., '👍', '❤️', '😂', '🔥' - store the actual emoji or a shortcode
-                createdAt: {
-                    type: Date,
-                    default: Date.now,
                 },
-            },
+                users: [ // Array of users who added this specific emoji reaction
+                    {
+                        type: mongoose.Schema.Types.ObjectId,
+                        ref: 'User',
+                    }
+                ],
+                // You might also want to add a createdAt or updatedAt for the reaction group
+                // For example, to know when the first reaction of this type was added
+                // firstReactedAt: { type: Date, default: Date.now },
+                // lastReactedAt: { type: Date, default: Date.now },
+            }
         ],
-    },
-    { timestamps: true }
+    }, // This is the closing brace for the main schema definition object
+    { timestamps: true } // This is the options object
 );
 
 const Message = mongoose.model('Message', messageSchema);
-
 module.exports = Message;

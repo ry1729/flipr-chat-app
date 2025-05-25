@@ -1,0 +1,146 @@
+/* src/styles/Theme.css - CSS Variables for Theme System */
+
+/* Light Theme (Default) */
+:root[data-theme="light"] {
+  /* Primary Colors */
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --primary-color: #667eea;
+  --primary-hover: #5a6fd8;
+  --primary-light: rgba(102, 126, 234, 0.1);
+  --primary-border: rgba(102, 126, 234, 0.2);
+
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-tertiary: #e9ecef;
+  --bg-chat: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  --bg-modal: rgba(0, 0, 0, 0.5);
+
+  /* Text Colors */
+  --text-primary: #2c3e50;
+  --text-secondary: #6c757d;
+  --text-muted: #adb5bd;
+  --text-inverse: #ffffff;
+
+  /* Border Colors */
+  --border-light: #e9ecef;
+  --border-medium: #dee2e6;
+  --border-dark: #adb5bd;
+
+  /* Message Bubble Colors */
+  --bubble-self: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bubble-other: #ffffff;
+  --bubble-self-text: #ffffff;
+  --bubble-other-text: #333333;
+
+  /* Status Colors */
+  --status-online: #28a745;
+  --status-offline: #6c757d;
+  --status-away: #ffc107;
+
+  /* Interactive Elements */
+  --hover-light: #f8f9fa;
+  --hover-medium: #e9ecef;
+  --active-light: #e3f2fd;
+
+  /* Shadows */
+  --shadow-light: 0 2px 10px rgba(0,0,0,0.05);
+  --shadow-medium: 0 5px 15px rgba(0,0,0,0.1);
+  --shadow-heavy: 0 10px 30px rgba(0,0,0,0.15);
+
+  /* Reactions */
+  --reaction-bg: rgba(102, 126, 234, 0.1);
+  --reaction-border: rgba(102, 126, 234, 0.2);
+  --reaction-active: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Dark Theme */
+:root[data-theme="dark"] {
+  /* Primary Colors */
+  --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --primary-color: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-light: rgba(79, 70, 229, 0.2);
+  --primary-border: rgba(79, 70, 229, 0.3);
+
+  /* Background Colors */
+  --bg-primary: #1a1a1a;
+  --bg-secondary: #2d2d2d;
+  --bg-tertiary: #404040;
+  --bg-chat: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  --bg-modal: rgba(0, 0, 0, 0.8);
+
+  /* Text Colors */
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  /* Border Colors */
+  --border-light: #404040;
+  --border-medium: #525252;
+  --border-dark: #737373;
+
+  /* Message Bubble Colors */
+  --bubble-self: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --bubble-other: #2d2d2d;
+  --bubble-self-text: #ffffff;
+  --bubble-other-text: #e2e8f0;
+
+  /* Status Colors */
+  --status-online: #10b981;
+  --status-offline: #64748b;
+  --status-away: #f59e0b;
+
+  /* Interactive Elements */
+  --hover-light: #404040;
+  --hover-medium: #525252;
+  --active-light: rgba(79, 70, 229, 0.2);
+
+  /* Shadows */
+  --shadow-light: 0 2px 10px rgba(0,0,0,0.3);
+  --shadow-medium: 0 5px 15px rgba(0,0,0,0.4);
+  --shadow-heavy: 0 10px 30px rgba(0,0,0,0.5);
+
+  /* Reactions */
+  --reaction-bg: rgba(79, 70, 229, 0.2);
+  --reaction-border: rgba(79, 70, 229, 0.3);
+  --reaction-active: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+}
+
+/* Global Theme Transition */
+* {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease;
+}
+
+/* Disable transitions during theme switching to prevent flicker */
+.theme-switching * {
+  transition: none !important;
+}
+
+/* Scrollbar Theming */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-medium);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border-dark);
+}
+
+/* Selection Color */
+::selection {
+  background: var(--primary-light);
+  color: var(--text-primary);
+}

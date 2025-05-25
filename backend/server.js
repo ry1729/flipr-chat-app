@@ -5,6 +5,7 @@ const connectDB = require('./config/db'); // Database connection utility
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const User = require('./models/User'); 
 const messageRoutes = require('./routes/messageRoutes');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware'); // Custom error handling middleware
 const path = require('path'); // Core Node.js module for path manipulation (currently unused, but kept)

@@ -1,5 +1,4 @@
 // backend/middleware/uploadMiddleware.js
-
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs'); // Import fs module
@@ -42,10 +41,12 @@ const fileFilter = (req, file, cb) => {
     }
 };
 
-const upload = multer({
-    storage: storage,
-    limits: { fileSize: 1024 * 1024 * 10 }, // 10MB file size limit
-    fileFilter: fileFilter,
+const upload = multer({ 
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  },
+  fileFilter: fileFilter
 });
 
 module.exports = upload;
