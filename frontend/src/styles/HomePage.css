@@ -1,0 +1,312 @@
+/* HomePage.css */
+
+/* Google Fonts - Import if not already done in index.html */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Montserrat:wght@400;600;700&display=swap');
+
+:root {
+  --primary-color: #6a5acd; /* Vibrant Purple */
+  --secondary-color: #87ceeb; /* Soft Blue */
+  --accent-color: #ff6f61; /* Coral for emphasis (optional) */
+  --text-color-dark: #2c3e50; /* Dark blue-grey for main text */
+  --text-color-light: #f9f9f9;
+  --bg-gradient-start: #e0f2f7;
+  --bg-gradient-end: #d1c4e9;
+  --card-bg: #ffffff;
+  --border-radius-lg: 16px;
+  --border-radius-md: 10px;
+  --shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.15);
+  --transition-speed: 0.3s ease-in-out;
+}
+
+/* Ensure HTML and Body allow proper height and scrolling */
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, var(--bg-gradient-start), var(--bg-gradient-end));
+  min-height: 100vh; /* Ensures body takes full viewport height */
+  padding: 20px; /* Padding around the main container */
+  box-sizing: border-box;
+  overflow-y: auto; /* Allow vertical scrolling on the body if content overflows */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+.homepage-container {
+  display: flex;
+  flex-direction: column; /* Stack vertically on small screens */
+  width: 100%;
+  max-width: 1200px;
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-light);
+  padding: 30px 20px; /* Base padding for mobile */
+  gap: 30px; /* Gap between graphics and content sections */
+  transition: box-shadow var(--transition-speed);
+  margin: 0 auto; /* Center the container horizontally on the page */
+}
+
+.homepage-container:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+/* Graphics Area */
+.homepage-graphics-area {
+  flex-shrink: 1; /* Allow it to shrink if needed */
+  flex-grow: 1; /* Allow it to grow, but min/max-height will control it */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  background: linear-gradient(160deg, var(--primary-color), var(--secondary-color));
+  border-radius: var(--border-radius-md);
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  min-height: 200px; /* Significantly reduced min-height for mobile */
+  max-height: 300px; /* Significantly reduced max-height for mobile */
+  box-sizing: border-box;
+}
+
+/* Main Content (Heading and Auth Forms) */
+.homepage-content {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 350px; /* Ensure enough room for heading and form on small screens */
+}
+
+/* Wrapper for just the heading */
+.homepage-heading-wrapper {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 25px;
+  padding: 0 10px;
+}
+
+.hero-heading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.2em;
+  color: var(--primary-color);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+/* Authentication Form Styling (Login/Register) */
+.auth-form-wrapper {
+  width: 450px; /* FIXED WIDTH when space allows */
+  max-width: calc(100% - 40px); /* Ensures it shrinks on mobile to prevent overflow */
+
+  padding: 25px;
+  background-color: var(--card-bg); /* Ensure background is white */
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-light);
+  text-align: center;
+  transition: transform 0.3s ease;
+  box-sizing: border-box;
+  border: none; /* NO BORDER LINE */
+}
+
+.auth-form-wrapper:hover {
+  transform: translateY(-3px);
+}
+
+.auth-form-wrapper h2 {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-color-dark); /* Ensure heading text is dark */
+  margin-bottom: 20px;
+  font-size: 1.8em;
+  font-weight: 600;
+}
+
+.auth-form-wrapper input {
+  width: 100%; /* Make width 100% and apply padding directly */
+  padding: 11px; /* Padding for input content */
+  margin-bottom: 15px;
+  border: 1px solid #e0e0e0;
+  border-radius: var(--border-radius-md);
+  font-size: 1em;
+  color: #000000 !important; /* **FORCE BLACK TEXT COLOR** */
+  background-color: #ffffff !important; /* **FORCE WHITE BACKGROUND FOR INPUT** */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+/* Explicitly target placeholder text with high specificity */
+.auth-form-wrapper input::placeholder {
+  color: #555555 !important; /* **FORCE DARKER GRAY PLACEHOLDER COLOR** */
+  opacity: 1 !important; /* **FORCE FULL OPACITY** */
+}
+.auth-form-wrapper input::-webkit-input-placeholder { /* Webkit browsers */
+  color: #555555 !important;
+  opacity: 1 !important;
+}
+.auth-form-wrapper input::-moz-placeholder { /* Mozilla Firefox */
+  color: #555555 !important;
+  opacity: 1 !important;
+}
+.auth-form-wrapper input:-ms-input-placeholder { /* Internet Explorer/Edge */
+  color: #555555 !important;
+  opacity: 1 !important;
+}
+.auth-form-wrapper input::--ms-input-placeholder { /* Older Edge */
+  color: #555555 !important;
+  opacity: 1 !important;
+}
+
+
+.auth-form-wrapper input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.2);
+  outline: none;
+}
+
+.auth-form-wrapper button[type="submit"] {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--primary-color);
+  color: var(--text-color-light); /* Ensure button text is light (white) */
+  border: none;
+  border-radius: var(--border-radius-md);
+  font-size: 1.05em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-speed), transform 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.auth-form-wrapper button[type="submit"]:hover {
+  background-color: #5b4da8;
+  transform: translateY(-2px);
+}
+
+.auth-form-wrapper .toggle-text {
+  margin-top: 20px;
+  font-size: 0.9em;
+  color: var(--text-color-dark); /* Ensure toggle text is dark */
+}
+
+.auth-form-wrapper .toggle-text button {
+  background: none;
+  color: var(--primary-color); /* Ensure toggle button text is primary color */
+  border: none;
+  padding: 0;
+  margin-left: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  transition: color var(--transition-speed);
+}
+
+.auth-form-wrapper .toggle-text button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary-color);
+  transform: scaleX(0);
+  transition: transform var(--transition-speed);
+}
+
+.auth-form-wrapper .toggle-text button:hover {
+  color: #5b4da8;
+}
+
+.auth-form-wrapper .toggle-text button:hover::after {
+  transform: scaleX(1);
+}
+
+/* Media Queries for Responsiveness */
+
+/* Tablet Portrait & Larger (e.g., min-width: 768px) */
+@media (min-width: 768px) {
+  .homepage-container {
+    padding: 40px;
+    gap: 50px;
+  }
+
+  .homepage-graphics-area {
+    min-height: 400px; /* Taller graphics area on tablets */
+    max-height: none; /* Remove max-height constraint for larger screens */
+  }
+
+  .homepage-heading-wrapper {
+    margin-bottom: 35px;
+  }
+
+  .hero-heading {
+    font-size: 3em;
+  }
+
+  .homepage-content {
+    min-height: initial; /* Remove fixed min-height for larger screens */
+  }
+}
+
+/* Desktop & Larger (e.g., min-width: 992px) */
+@media (min-width: 992px) {
+  body {
+    display: flex; /* Re-apply flex for desktop layout to center the container */
+    justify-content: center;
+    align-items: center;
+  }
+
+  .homepage-container {
+    flex-direction: row; /* Side-by-side layout */
+    height: 700px; /* Fixed height for desktop */
+    padding: 0;
+  }
+
+  .homepage-graphics-area {
+    flex: 1.2; /* Takes more space than content */
+    border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+    height: 100%;
+    padding: 50px;
+  }
+
+  .homepage-content {
+    flex: 1; /* Takes remaining space */
+    padding: 50px;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .homepage-heading-wrapper {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .hero-heading {
+    font-size: 3.5em;
+  }
+
+  .auth-form-wrapper {
+    align-self: flex-start;
+    width: 450px; /* Ensure fixed width on desktop */
+    max-width: 450px; /* Explicit max-width for clarity on desktop */
+  }
+}
+
+/* Even Larger Screens (Optional, e.g., min-width: 1200px) */
+@media (min-width: 1200px) {
+  .hero-heading {
+    font-size: 4.2em;
+  }
+}

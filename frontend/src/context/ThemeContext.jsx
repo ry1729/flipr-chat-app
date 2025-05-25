@@ -4,44 +4,34 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export const ThemeProvider = ({ children }) => {
-  // Get initial theme from localStorage or default to 'light'
+  // Initialize theme from localStorage, or default to 'light'
   const [theme, setTheme] = useState(() => {
-    const savedTheme = localStorage.getItem('chatAppTheme');
+    const savedTheme = localStorage.getItem('appTheme');
     return savedTheme || 'light';
   });
 
-  // Apply theme to document root and save to localStorage
+  // Apply the theme class to the body element
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('chatAppTheme', theme);
+    document.body.className = theme; // Add 'light' or 'dark' class to body
+    localStorage.setItem('appTheme', theme); // Save theme preference
   }, [theme]);
 
-  // Toggle between light and dark themes
+  // Function to toggle theme
   const toggleTheme = () => {
-    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
-  };
-
-  // Check if current theme is dark
-  const isDarkMode = theme === 'dark';
-
-  const value = {
-    theme,
-    toggleTheme,
-    isDarkMode,
-    setTheme
+    setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
   };
 
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );
 };
 
-// Custom hook to use theme
+// Custom hook to use the theme context
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (!context) {
+  if (context === undefined) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;

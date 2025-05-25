@@ -1,0 +1,31 @@
+/* In src/styles/AuthForms.css */
+
+.form-group {
+  margin-bottom: 1rem; /* Space between each form group */
+  text-align: left; /* Align labels/inputs to the left within the group */
+}
+
+.form-group label {
+  display: block; /* Make label take full width and put input on new line */
+  margin-bottom: 0.5rem; /* Space between label and input */
+  font-weight: 600;
+  color: var(--text-primary); /* Ensure label color changes with theme */
+  transition: color 0.3s ease;
+}
+
+/* Also ensure your .error-message is defined in AuthForms.css as well, if it's not already */
+.error-message {
+  color: var(--error-color, #dc3545); /* Fallback to red if --error-color isn't defined globally */
+  margin-bottom: 10px; /* Space between error and form */
+  font-size: 0.9rem;
+}
+
+/* And remember to define --error-color in your global theme variables (e.g., in ChatPage.css's :root and body.dark blocks) */
+/*
+:root, body.light {
+  --error-color: #dc3545;
+}
+body.dark {
+  --error-color: #ef4444; // A brighter red for dark theme
+}
+*/
