@@ -6,6 +6,7 @@ import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../common/LoadingSpinner';
 import UserListItem from './UserListItem';
+import GroupChatModal from '../modals/GroupChatModal';
 import { io } from 'socket.io-client';
 
 let socket;
@@ -19,6 +20,7 @@ function MyChats() {
     const [searchResult, setSearchResult] = useState([]);
     const [loadingSearch, setLoadingSearch] = useState(false);
     const [onlineUsers, setOnlineUsers] = useState(new Set());
+    const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
     // Initialize socket for online status (if not already done)
     useEffect(() => {
@@ -109,6 +111,13 @@ function MyChats() {
         setSelectedChat(chat);
     };
 
+    // Handle Group Chat Creation
+    const handleGroupCreated = (newGroupChat) => {
+        setChats([newGroupChat, ...chats]);
+        setSelectedChat(newGroupChat);
+        toast.success(`Group "${newGroupChat.chatName}" created!`);
+    };
+
     // Check if user is online
     const isUserOnline = (userId) => {
         return onlineUsers.has(userId);
@@ -138,7 +147,16 @@ function MyChats() {
     return (
         <div className="my-chats-container">
             <div className="my-chats-header">
-                <h3>My Chats</h3>
+             <div className="header-title-section">
+                    <h3>My Chats</h3>
+                    <button
+                        className="create-group-btn"
+                        onClick={() => setIsGroupModalOpen(true)}
+                        title="Create Group Chat"
+                    >
+                        👥 New Group
+                    </button>
+                </div>
             </div>
 
             
@@ -198,11 +216,18 @@ function MyChats() {
                             >
                                 <div className="chat-item-content">
                                     <div className="chat-item-header">
-                                        <h4>
-                                            {chat.isGroupChat
-                                                ? chat.chatName
-                                                : otherUser?.username || 'Unknown User'}
-                                        </h4>
+                                        <div className="chat-title-section">
+                                            <h4>
+                                                {chat.isGroupChat
+                                                    ? chat.chatName
+                                                    : otherUser?.username || 'Unknown User'}
+                                            </h4>
+                                            {chat.isGroupChat && (
+                                                <span className="group-indicator">
+                                                    👥 {chat.users.length}
+                                                </span>
+                                            )}
+                                        </div>
                                         {!chat.isGroupChat && otherUser && (
                                             <div className="user-status">
                                                 <div className={`${isUserOnline(otherUser._id) ? 'online-indicator' : 'offline-indicator'}`}></div>
@@ -216,6 +241,15 @@ function MyChats() {
                                                 ? <span className="online-text">Online</span>
                                                 : <span className="last-seen">Last seen {formatLastSeen(otherUser.lastSeen)}</span>
                                             }
+                                        </div>
+                                    )}
+
+                                    {chat.isGroupChat && (
+                                        <div className="group-info">
+                                            <span className="group-members">
+                                                {chat.users.slice(0, 3).map(u => u.username).join(', ')}
+                                                {chat.users.length > 3 && ` +${chat.users.length - 3} more`}
+                                            </span>
                                         </div>
                                     )}
                                     
@@ -233,10 +267,17 @@ function MyChats() {
                     })
                 ) : (
                     <div className="no-chats-found">
-                        No chats found. Start a new conversation!
+                        No chats found. Start a new conversation or create a group!
                     </div>
                 )}
             </div>
+
+            {/* Group Chat Creation Modal */}
+            <GroupChatModal
+                isOpen={isGroupModalOpen}
+                onClose={() => setIsGroupModalOpen(false)}
+                onGroupCreated={handleGroupCreated}
+            />
         </div>
     );
 }

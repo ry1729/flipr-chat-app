@@ -117,7 +117,7 @@ const addReaction = asyncHandler(async (req, res) => {
                 $push: {
                     reactions: {
                         user: req.user._id, // User from protect middleware
-                        type: reactionType,
+                        emoji: reactionType,
                         createdAt: new Date(),
                     },
                 },

@@ -521,3 +521,191 @@
       font-size: 0.8rem;
   }
 }
+
+/* Add these Group Chat styles to your existing ChatComponents.css */
+
+/* Enhanced MyChats Header with Group Button */
+.header-title-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.create-group-btn {
+  background: var(--primary-gradient);
+  color: var(--text-inverse);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.create-group-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px var(--primary-light);
+}
+
+/* Group Chat List Item Enhancements */
+.chat-title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.group-indicator {
+  background: var(--primary-light);
+  color: var(--primary-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid var(--primary-border);
+}
+
+.group-info {
+  margin-bottom: 0.5rem;
+}
+
+.group-members {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+/* Group Chat Selected State */
+.chat-list-item.selected .group-indicator {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-inverse);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.chat-list-item.selected .group-members {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Enhanced Chat Item Layout */
+.chat-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+.chat-item-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  flex: 1;
+}
+
+/* Group Management Styles (for future use) */
+.group-admin-badge {
+  background: var(--status-online);
+  color: var(--text-inverse);
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.group-member-count {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Group Chat Hover Effects */
+.chat-list-item:hover .group-indicator {
+  transform: scale(1.05);
+  background: var(--primary-border);
+}
+
+.chat-list-item:hover .group-members {
+  color: var(--text-primary);
+}
+
+/* No Chats State Update */
+.no-chats-found {
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: var(--text-secondary);
+  font-style: italic;
+  background: var(--bg-primary);
+  line-height: 1.5;
+}
+
+/* Loading Spinner in Search */
+.search-results-section {
+  position: relative;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Group Chat Icon Styling */
+.group-chat-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-right: 1rem;
+  border: 2px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.chat-list-item:hover .group-chat-icon {
+  border-color: var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px var(--primary-light);
+}
+
+/* Responsive Design for Groups */
+@media (max-width: 768px) {
+  .header-title-section {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .create-group-btn {
+    justify-content: center;
+    padding: 0.6rem 1rem;
+    font-size: 0.85rem;
+  }
+  
+  .chat-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .group-indicator {
+    align-self: flex-start;
+  }
+  
+  .group-members {
+    font-size: 0.75rem;
+  }
+}

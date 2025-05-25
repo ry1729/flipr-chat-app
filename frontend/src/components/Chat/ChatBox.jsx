@@ -10,6 +10,7 @@ import ScrollableChat from './ScrollableChat';
 import SendMessageForm from './SendMessageForm';
 import ProfileModal from '../modals/ProfileModal';
 import '../../styles/ChatComponents.css';
+import GroupManagementModal from '../modals/GroupManagementModal';
 
 let socket;
 
@@ -22,6 +23,7 @@ function ChatBox() {
   const [socketConnected, setSocketConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [typingUser, setTypingUser] = useState(''); // NEW: Track who is typing
+  const [isGroupManagementOpen, setIsGroupManagementOpen] = useState(false); // NEW
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [onlineUsers, setOnlineUsers] = useState(new Set()); // NEW: Track online users
 
@@ -121,6 +123,16 @@ function ChatBox() {
     setNotification(notification.filter((n) => n.chat._id !== selectedChat?._id));
   }, [selectedChat]);
 
+// Handle group updates
+  const handleGroupUpdated = (updatedGroup) => {
+    setSelectedChat(updatedGroup);
+    setChats(prevChats => 
+      prevChats.map(chat => 
+        chat._id === updatedGroup._id ? updatedGroup : chat
+      )
+    );
+  };
+
   const getChatName = () => {
     if (!selectedChat) return '';
     return selectedChat.isGroupChat
@@ -169,28 +181,59 @@ function ChatBox() {
             <div className="chat-header-with-status">
               <div className="chat-title">
                 <h3>{getChatName()}</h3>
-                {!selectedChat.isGroupChat && getOtherUser() && (
-                  <div className="user-status">
-                    <div className={`${isUserOnline(getOtherUser()._id) ? 'online-indicator' : 'offline-indicator'}`}></div>
+                {selectedChat.isGroupChat ? (
+                  <div className="group-info-header">
+                    <span className="group-member-count">
+                      👥 {selectedChat.users.length} members
+                    </span>
                   </div>
+                ) : (
+                  getOtherUser() && (
+                    <div className="user-status">
+                      <div className={`${isUserOnline(getOtherUser()._id) ? 'online-indicator' : 'offline-indicator'}`}></div>
+                    </div>
+                  )
                 )}
               </div>
-              {!selectedChat.isGroupChat && getOtherUser() && (
-                <div className={`chat-status ${isUserOnline(getOtherUser()._id) ? 'online' : 'offline'}`}>
-                  {isUserOnline(getOtherUser()._id) 
-                    ? 'Online' 
-                    : `Last seen ${formatLastSeen(getOtherUser().lastSeen)}`}
+              
+              {selectedChat.isGroupChat ? (
+                <div className="group-status-info">
+                  <span className="group-members-preview">
+                    {selectedChat.users.slice(0, 3).map(u => u.username).join(', ')}
+                    {selectedChat.users.length > 3 && ` +${selectedChat.users.length - 3} more`}
+                  </span>
                 </div>
+              ) : (
+                getOtherUser() && (
+                  <div className={`chat-status ${isUserOnline(getOtherUser()._id) ? 'online' : 'offline'}`}>
+                    {isUserOnline(getOtherUser()._id) 
+                      ? 'Online' 
+                      : `Last seen ${formatLastSeen(getOtherUser().lastSeen)}`}
+                  </div>
+                )
               )}
             </div>
-            {!selectedChat.isGroupChat && getOtherUser() && (
-              <button
-                className="profile-view-button"
-                onClick={() => setIsProfileModalOpen(true)}
-              >
-                View Profile
-              </button>
-            )}
+            
+            <div className="chat-actions">
+              {selectedChat.isGroupChat ? (
+                <button
+                  className="group-settings-btn"
+                  onClick={() => setIsGroupManagementOpen(true)}
+                  title="Group Settings"
+                >
+                  ⚙️ Settings
+                </button>
+              ) : (
+                getOtherUser() && (
+                  <button
+                    className="profile-view-button"
+                    onClick={() => setIsProfileModalOpen(true)}
+                  >
+                    View Profile
+                  </button>
+                )
+              )}
+            </div>
           </div>
 
           <div className="message-area">
@@ -205,7 +248,10 @@ function ChatBox() {
               />
             ) : (
               <div className="no-messages-placeholder">
-                Start a conversation!
+                {selectedChat.isGroupChat 
+                  ? `Welcome to ${selectedChat.chatName}! Start the conversation.`
+                  : 'Start a conversation!'
+                }
               </div>
             )}
           </div>
@@ -219,11 +265,22 @@ function ChatBox() {
         </>
       )}
 
+      {/* Profile Modal for Direct Messages */}
       {isProfileModalOpen && getOtherUser() && (
         <ProfileModal
           isOpen={isProfileModalOpen}
           onClose={() => setIsProfileModalOpen(false)}
           user={getOtherUser()}
+        />
+      )}
+
+      {/* Group Management Modal */}
+      {isGroupManagementOpen && selectedChat?.isGroupChat && (
+        <GroupManagementModal
+          isOpen={isGroupManagementOpen}
+          onClose={() => setIsGroupManagementOpen(false)}
+          groupChat={selectedChat}
+          onGroupUpdated={handleGroupUpdated}
         />
       )}
     </div>
