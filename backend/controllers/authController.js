@@ -85,22 +85,36 @@ const registerUser = asyncHandler(async (req, res) => { // asyncHandler will cat
 // @route   POST /api/auth/login
 // @access  Public
 // (Keep your existing authUser function here)
+// backend/controllers/authController.js
+
+
 const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
+    console.log('Login attempt for email:', email); // New Log
     const user = await User.findOne({ email });
 
-    if (user && (await user.matchPassword(password))) {
-        res.json({
-            _id: user._id,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar,
-            token: generateToken(user._id),
-        });
+    if (user) {
+        console.log('User found:', user.email); // New Log
+        const passwordMatches = await user.matchPassword(password);
+        console.log('Password match result:', passwordMatches); // New Log
+
+        if (passwordMatches) {
+            res.json({
+                _id: user._id,
+                username: user.username,
+                email: user.email,
+                avatar: user.avatar,
+                token: generateToken(user._id),
+            });
+        } else {
+            res.status(401);
+            throw new Error('Invalid Email or Password (Password mismatch)'); // More specific error message
+        }
     } else {
+        console.log('User not found for email:', email); // New Log
         res.status(401);
-        throw new Error('Invalid Email or Password');
+        throw new Error('Invalid Email or Password (User not found)'); // More specific error message
     }
 });
 

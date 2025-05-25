@@ -1,0 +1,57 @@
+/* src/styles/ChatPage.css */
+.chat-page-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.chat-page-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.logged-in-user {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.logout-button {
+  padding: 0.5rem 1rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background-color: #c82333;
+}
+
+.chat-content-area {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.my-chats-sidebar {
+  width: 300px;
+  border-right: 1px solid #dee2e6;
+  background-color: #f8f9fa;
+}
+
+.chatbox-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
