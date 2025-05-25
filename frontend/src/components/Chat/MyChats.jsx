@@ -1,11 +1,14 @@
-// src/components/Chat/MyChats.jsx (Fixed import paths)
+// src/components/Chat/MyChats.jsx - Enhanced with online status
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Fixed: this path is actually correct
-import { useChat } from '../../context/ChatContext'; // Fixed: this path is actually correct
+import { useAuth } from '../../context/AuthContext';
+import { useChat } from '../../context/ChatContext';
 import api from '../../utils/api';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../common/LoadingSpinner';
 import UserListItem from './UserListItem';
+import { io } from 'socket.io-client';
+
+let socket;
 
 function MyChats() {
     const { user } = useAuth();
@@ -15,6 +18,34 @@ function MyChats() {
     const [search, setSearch] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const [loadingSearch, setLoadingSearch] = useState(false);
+    const [onlineUsers, setOnlineUsers] = useState(new Set());
+
+    // Initialize socket for online status (if not already done)
+    useEffect(() => {
+        if (!socket && user) {
+            socket = io(import.meta.env.VITE_REACT_APP_SOCKET_ENDPOINT);
+            
+            // Listen for online/offline status updates
+            socket.on('user online', (userData) => {
+                setOnlineUsers(prev => new Set([...prev, userData.userId]));
+            });
+
+            socket.on('user offline', (userData) => {
+                setOnlineUsers(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(userData.userId);
+                    return newSet;
+                });
+            });
+        }
+
+        return () => {
+            if (socket) {
+                socket.off('user online');
+                socket.off('user offline');
+            }
+        };
+    }, [user]);
 
     // Fetch existing chats of the logged-in user
     const fetchChats = async () => {
@@ -78,11 +109,31 @@ function MyChats() {
         setSelectedChat(chat);
     };
 
+    // Check if user is online
+    const isUserOnline = (userId) => {
+        return onlineUsers.has(userId);
+    };
+
+    // Format last seen
+    const formatLastSeen = (lastSeen) => {
+        if (!lastSeen) return '';
+        const now = new Date();
+        const lastSeenDate = new Date(lastSeen);
+        const diffMs = now - lastSeenDate;
+        const diffMins = Math.floor(diffMs / 60000);
+        const diffHours = Math.floor(diffMins / 60);
+
+        if (diffMins < 1) return 'Just now';
+        if (diffMins < 60) return `${diffMins}m ago`;
+        if (diffHours < 24) return `${diffHours}h ago`;
+        return lastSeenDate.toLocaleDateString();
+    };
+
     useEffect(() => {
         if (user) {
             fetchChats();
         }
-    }, [user]); // Removed setChats from dependencies to prevent infinite loop
+    }, [user]);
 
     return (
         <div className="my-chats-container">
@@ -114,6 +165,8 @@ function MyChats() {
                             key={u._id}
                             user={u}
                             handleFunction={() => accessChat(u._id)}
+                            isOnline={isUserOnline(u._id)}
+                            lastSeen={u.lastSeen}
                         />
                     ))}
                 </div>
@@ -124,27 +177,52 @@ function MyChats() {
                 {loadingChats ? (
                     <LoadingSpinner />
                 ) : chats.length > 0 ? (
-                    chats.map((chat) => (
-                        <div
-                            key={chat._id}
-                            onClick={() => handleChatSelect(chat)}
-                            className={`chat-list-item ${selectedChat?._id === chat._id ? 'selected' : ''}`}
-                        >
-                            <h4>
-                                {chat.isGroupChat
-                                    ? chat.chatName
-                                    : chat.users.find((u) => u._id !== user._id)?.username || 'Unknown User'}
-                            </h4>
-                            {chat.latestMessage && (
-                                <p className="latest-message-snippet">
-                                    {chat.latestMessage.sender._id === user._id ? 'You: ' : `${chat.latestMessage.sender.username}: `}
-                                    {chat.latestMessage.type === 'text'
-                                        ? chat.latestMessage.content.substring(0, 30) + (chat.latestMessage.content.length > 30 ? '...' : '')
-                                        : `[${chat.latestMessage.type.charAt(0).toUpperCase() + chat.latestMessage.type.slice(1)}]`}
-                                </p>
-                            )}
-                        </div>
-                    ))
+                    chats.map((chat) => {
+                        const otherUser = chat.isGroupChat 
+                            ? null 
+                            : chat.users.find((u) => u._id !== user._id);
+                        
+                        return (
+                            <div
+                                key={chat._id}
+                                onClick={() => handleChatSelect(chat)}
+                                className={`chat-list-item ${selectedChat?._id === chat._id ? 'selected' : ''}`}
+                            >
+                                <div className="chat-item-content">
+                                    <div className="chat-item-header">
+                                        <h4>
+                                            {chat.isGroupChat
+                                                ? chat.chatName
+                                                : otherUser?.username || 'Unknown User'}
+                                        </h4>
+                                        {!chat.isGroupChat && otherUser && (
+                                            <div className="user-status">
+                                                <div className={`${isUserOnline(otherUser._id) ? 'online-indicator' : 'offline-indicator'}`}></div>
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    {!chat.isGroupChat && otherUser && (
+                                        <div className="chat-user-status">
+                                            {isUserOnline(otherUser._id) 
+                                                ? <span className="online-text">Online</span>
+                                                : <span className="last-seen">Last seen {formatLastSeen(otherUser.lastSeen)}</span>
+                                            }
+                                        </div>
+                                    )}
+                                    
+                                    {chat.latestMessage && (
+                                        <p className="latest-message-snippet">
+                                            {chat.latestMessage.sender._id === user._id ? 'You: ' : `${chat.latestMessage.sender.username}: `}
+                                            {chat.latestMessage.type === 'text'
+                                                ? chat.latestMessage.content.substring(0, 30) + (chat.latestMessage.content.length > 30 ? '...' : '')
+                                                : `[${chat.latestMessage.type.charAt(0).toUpperCase() + chat.latestMessage.type.slice(1)}]`}
+                                        </p>
+                                    )}
+                                </div>
+                            </div>
+                        );
+                    })
                 ) : (
                     <div className="no-chats-found">
                         No chats found. Start a new conversation!

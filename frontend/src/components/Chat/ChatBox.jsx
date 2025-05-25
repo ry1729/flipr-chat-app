@@ -1,207 +1,233 @@
-// src/components/chat/ChatBox.jsx (Updated and Populated)
-import React, { useState, useEffect, useRef } from 'react';
+// src/components/Chat/ChatBox.jsx - Enhanced with status indicators
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import { useChat } from '../../context/ChatContext'; // Use ChatContext for selectedChat, messages, etc.
+import { useChat } from '../../context/ChatContext';
 import api from '../../utils/api';
 import { io } from 'socket.io-client';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../common/LoadingSpinner';
-// import ScrollableChat from './ScrollableChat'; // If you have this, import it
-import SendMessageForm from './SendMessageForm'; // Assuming you have this (from your previous list)
+import ScrollableChat from './ScrollableChat';
+import SendMessageForm from './SendMessageForm';
 import ProfileModal from '../modals/ProfileModal';
 import '../../styles/ChatComponents.css';
 
-let socket; // Global socket instance for this component
+let socket;
 
 function ChatBox() {
-    const { user } = useAuth();
-    const { selectedChat, setSelectedChat, notification, setNotification, chats, setChats } = useChat(); // Use context
+  const { user } = useAuth();
+  const { selectedChat, setSelectedChat, notification, setNotification } = useChat();
 
-    const [messages, setMessages] = useState([]); // Messages for the selected chat
-    const [loadingMessages, setLoadingMessages] = useState(false);
-    const [socketConnected, setSocketConnected] = useState(false);
-    const [isTyping, setIsTyping] = useState(false); // Typing indicator from others
-    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [typingUser, setTypingUser] = useState(''); // NEW: Track who is typing
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [onlineUsers, setOnlineUsers] = useState(new Set()); // NEW: Track online users
 
-    const messagesEndRef = useRef(null); // Ref for auto-scrolling
+  // Socket.IO connection and setup
+  useEffect(() => {
+    if (!user) return;
+    socket = io(import.meta.env.VITE_REACT_APP_SOCKET_ENDPOINT);
+    socket.emit('setup', user);
+    socket.on('connected', () => setSocketConnected(true));
+    
+    // Enhanced typing indicators
+    socket.on('typing', (data) => {
+      setIsTyping(true);
+      setTypingUser(data?.username || 'Someone');
+    });
+    
+    socket.on('stop typing', () => {
+      setIsTyping(false);
+      setTypingUser('');
+    });
 
-    // --- Socket.IO connection and setup (from your old ChatPage, now here) ---
-    useEffect(() => {
-        if (!user) return;
-        socket = io(import.meta.env.VITE_REACT_APP_SOCKET_ENDPOINT);
-        socket.emit('setup', user);
-        socket.on('connected', () => setSocketConnected(true));
-        socket.on('typing', () => setIsTyping(true));
-        socket.on('stop typing', () => setIsTyping(false));
+    // NEW: Online/offline status listeners
+    socket.on('user online', (userData) => {
+      setOnlineUsers(prev => new Set([...prev, userData.userId]));
+      toast.success(`${userData.username} is now online`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    });
 
-        return () => {
-            socket.disconnect();
-        };
-    }, [user]);
+    socket.on('user offline', (userData) => {
+      setOnlineUsers(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userData.userId);
+        return newSet;
+      });
+      toast.info(`${userData.username} went offline`, {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    });
 
-    // --- Message received listener (from your old ChatPage, now here) ---
-    useEffect(() => {
-        socket.on('message received', (newMessageReceived) => {
-            if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id) {
-                // If not the selected chat, add to notification
-                if (!notification.some(n => n._id === newMessageReceived._id)) { // Prevent duplicates
-                    setNotification([newMessageReceived, ...notification]);
-                    toast.info(`New message from ${newMessageReceived.sender.username} in ${newMessageReceived.chat.chatName || 'a chat'}!`);
-                    // Update latestMessage in chats context for sidebar preview
-                    setChats(prevChats => prevChats.map(chat =>
-                        chat._id === newMessageReceived.chat._id
-                            ? { ...chat, latestMessage: newMessageReceived }
-                            : chat
-                    ));
-                }
-            } else {
-                // If it's the selected chat, update messages
-                setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
-                // Optional: Emit a "read receipt" here if you implement that feature
-            }
-        });
-
-        return () => {
-            socket.off('message received');
-        };
-    }, [selectedChat, notification, setNotification, setChats]); // Add setChats to dependencies
-
-    // --- Auto-scroll to bottom of messages (from your old ChatPage, now here) ---
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
-
-    // --- Fetch messages for selected chat (from your old ChatPage, now here) ---
-    const fetchMessages = async () => {
-        if (!selectedChat) {
-            setMessages([]); // Clear messages if no chat selected
-            return;
-        }
-
-        setLoadingMessages(true);
-        try {
-            const { data } = await api.get(`/messages/${selectedChat._id}`); // Your backend endpoint
-            setMessages(data);
-            socket.emit('join chat', selectedChat._id); // Join the chat room
-        } catch (error) {
-            toast.error('Failed to load messages.');
-            console.error('Error fetching messages:', error);
-        } finally {
-            setLoadingMessages(false);
-        }
+    return () => {
+      socket.disconnect();
     };
+  }, [user]);
 
-    // --- Fetch messages whenever selected chat changes (from your old ChatPage, now here) ---
-    useEffect(() => {
-        fetchMessages();
-        // Remove notification for selected chat when it's opened
-        setNotification(notification.filter((n) => n.chat._id !== selectedChat?._id));
-    }, [selectedChat]); // Fetch messages whenever selected chat changes, also clear notifications
-
-    const getChatName = () => {
-        if (!selectedChat) return '';
-        return selectedChat.isGroupChat
-            ? selectedChat.chatName
-            : selectedChat.users.find(u => u._id !== user._id)?.username || 'Direct Message';
-    };
-
-    const getOtherUser = () => {
-        if (selectedChat && !selectedChat.isGroupChat) {
-            return selectedChat.users.find(u => u._id !== user._id);
+  // Message received listener
+  useEffect(() => {
+    socket.on('message received', (newMessageReceived) => {
+      if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id) {
+        if (!notification.includes(newMessageReceived)) {
+          setNotification([newMessageReceived, ...notification]);
+          toast.info(`New message from ${newMessageReceived.sender.username}!`);
         }
-        return null;
+      } else {
+        setMessages((prevMessages) => [...prevMessages, newMessageReceived]);
+      }
+    });
+
+    // NEW: Handle real-time reaction updates
+    socket.on('reaction received', (reactionData) => {
+      setMessages((prevMessages) => 
+        prevMessages.map(msg => 
+          msg._id === reactionData.messageId 
+            ? { ...msg, reactions: reactionData.updatedMessage.reactions }
+            : msg
+        )
+      );
+    });
+
+    return () => {
+      socket.off('message received');
+      socket.off('reaction received'); // Clean up reaction listener
     };
+  }, [selectedChat, notification, setNotification]);
 
-    return (
-        <div className="chat-box-container"> {/* This was your .chat-main-area */}
-            {!selectedChat ? (
-                <div className="no-chat-selected">
-                    Select a chat to start messaging
-                </div>
-            ) : (
-                <>
-                    <div className="chat-header">
-                        <h3>
-                            {getChatName()}
-                        </h3>
-                        {!selectedChat.isGroupChat && getOtherUser() && (
-                            <button
-                                className="profile-view-button"
-                                onClick={() => setIsProfileModalOpen(true)}
-                            >
-                                View Profile
-                            </button>
-                        )}
-                    </div>
+  // Fetch messages for selected chat
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
 
-                    <div className="message-area">
-                        {loadingMessages ? (
-                            <LoadingSpinner />
-                        ) : messages.length > 0 ? (
-                            // Render individual messages (similar to your old ChatPage's message map)
-                            // Ideally, you'd use a ScrollableChat component here as you imported
-                            // Assuming your ScrollableChat can take messages and isTyping prop
-                            <div className="messages-scroll-container">
-                                {messages.map((msg) => (
-                                    <div
-                                        key={msg._id}
-                                        className={`message-bubble-wrapper ${msg.sender._id === user._id ? 'self' : 'other'}`}
-                                    >
-                                        <div className="message-bubble">
-                                            <div className="message-sender">
-                                                {msg.sender._id === user._id ? 'You' : msg.sender.username}
-                                            </div>
-                                            {msg.type === 'text' && (
-                                                <p className="message-content">{msg.content}</p>
-                                            )}
-                                            {msg.type === 'image' && (
-                                                <img src={msg.content} alt="Sent Image" className="message-image" />
-                                            )}
-                                            {msg.type === 'video' && (
-                                                <video controls src={msg.content} className="message-video"></video>
-                                            )}
-                                            {(msg.type === 'file' || msg.type === 'audio') && (
-                                                <a href={msg.content} target="_blank" rel="noopener noreferrer" className="message-file-link">
-                                                    <span className="file-icon">📁</span> Download {msg.type}
-                                                </a>
-                                            )}
-                                            <div className="message-timestamp">
-                                                {new Date(msg.createdAt).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                {isTyping && <div className="typing-indicator">Typing...</div>}
-                                <div ref={messagesEndRef} /> {/* Scroll target */}
-                            </div>
-                        ) : (
-                            <div className="no-messages-placeholder">
-                                Start a conversation!
-                            </div>
-                        )}
-                    </div>
+    setLoadingMessages(true);
+    try {
+      const { data } = await api.get(`/messages/${selectedChat._id}`);
+      setMessages(data);
+      socket.emit('join chat', selectedChat._id);
+    } catch (error) {
+      toast.error('Failed to load messages.');
+      console.error('Error fetching messages:', error);
+    } finally {
+      setLoadingMessages(false);
+    }
+  };
 
-                    {/* Use the SendMessageForm component for input and send button */}
-                    <SendMessageForm
-                        selectedChat={selectedChat}
-                        socket={socket}
-                        setMessages={setMessages} // Send setMessages for updating UI after send
-                        socketConnected={socketConnected}
-                        // If SendMessageForm needs typingHandler or handleFileUpload directly
-                        // you might pass them as props here, or implement them inside SendMessageForm
-                    />
-                </>
-            )}
+  useEffect(() => {
+    fetchMessages();
+    setNotification(notification.filter((n) => n.chat._id !== selectedChat?._id));
+  }, [selectedChat]);
 
-            {isProfileModalOpen && getOtherUser() && (
-                <ProfileModal
-                    isOpen={isProfileModalOpen}
-                    onClose={() => setIsProfileModalOpen(false)}
-                    user={getOtherUser()}
-                />
-            )}
+  const getChatName = () => {
+    if (!selectedChat) return '';
+    return selectedChat.isGroupChat
+      ? selectedChat.chatName
+      : selectedChat.users.find(u => u._id !== user._id)?.username || 'Direct Message';
+  };
+
+  const getOtherUser = () => {
+    if (selectedChat && !selectedChat.isGroupChat) {
+      return selectedChat.users.find(u => u._id !== user._id);
+    }
+    return null;
+  };
+
+  // NEW: Check if user is online (matching your schema)
+  const isUserOnline = (userId) => {
+    return onlineUsers.has(userId);
+  };
+
+  // NEW: Format last seen
+  const formatLastSeen = (lastSeen) => {
+    if (!lastSeen) return '';
+    const now = new Date();
+    const lastSeenDate = new Date(lastSeen);
+    const diffMs = now - lastSeenDate;
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMins / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffMins < 1) return 'Just now';
+    if (diffMins < 60) return `${diffMins}m ago`;
+    if (diffHours < 24) return `${diffHours}h ago`;
+    if (diffDays < 7) return `${diffDays}d ago`;
+    return lastSeenDate.toLocaleDateString();
+  };
+
+  return (
+    <div className="chat-box-container">
+      {!selectedChat ? (
+        <div className="no-chat-selected">
+          Select a chat to start messaging
         </div>
-    );
+      ) : (
+        <>
+          <div className="chat-header">
+            <div className="chat-header-with-status">
+              <div className="chat-title">
+                <h3>{getChatName()}</h3>
+                {!selectedChat.isGroupChat && getOtherUser() && (
+                  <div className="user-status">
+                    <div className={`${isUserOnline(getOtherUser()._id) ? 'online-indicator' : 'offline-indicator'}`}></div>
+                  </div>
+                )}
+              </div>
+              {!selectedChat.isGroupChat && getOtherUser() && (
+                <div className={`chat-status ${isUserOnline(getOtherUser()._id) ? 'online' : 'offline'}`}>
+                  {isUserOnline(getOtherUser()._id) 
+                    ? 'Online' 
+                    : `Last seen ${formatLastSeen(getOtherUser().lastSeen)}`}
+                </div>
+              )}
+            </div>
+            {!selectedChat.isGroupChat && getOtherUser() && (
+              <button
+                className="profile-view-button"
+                onClick={() => setIsProfileModalOpen(true)}
+              >
+                View Profile
+              </button>
+            )}
+          </div>
+
+          <div className="message-area">
+            {loadingMessages ? (
+              <LoadingSpinner />
+            ) : messages.length > 0 ? (
+              <ScrollableChat 
+                messages={messages} 
+                isTyping={isTyping} 
+                typingUser={typingUser}
+                socket={socket}
+              />
+            ) : (
+              <div className="no-messages-placeholder">
+                Start a conversation!
+              </div>
+            )}
+          </div>
+
+          <SendMessageForm
+            selectedChat={selectedChat}
+            socket={socket}
+            setMessages={setMessages}
+            socketConnected={socketConnected}
+          />
+        </>
+      )}
+
+      {isProfileModalOpen && getOtherUser() && (
+        <ProfileModal
+          isOpen={isProfileModalOpen}
+          onClose={() => setIsProfileModalOpen(false)}
+          user={getOtherUser()}
+        />
+      )}
+    </div>
+  );
 }
 
 export default ChatBox;
