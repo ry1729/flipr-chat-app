@@ -116,6 +116,7 @@ body {
   transition: transform 0.3s ease;
   box-sizing: border-box;
   border: none; /* NO BORDER LINE */
+  color: #000000;
 }
 
 .auth-form-wrapper:hover {

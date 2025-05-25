@@ -78,7 +78,7 @@ function Register() {
           <input
             type="text"
             id="username"
-            placeholder="Enter your username"
+            // placeholder="Enter your username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -90,7 +90,7 @@ function Register() {
           <input
             type="email"
             id="email"
-            placeholder="Enter your email"
+            // placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -102,7 +102,7 @@ function Register() {
           <input
             type="password"
             id="password"
-            placeholder="Enter password"
+            // placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -114,7 +114,7 @@ function Register() {
           <input
             type="password"
             id="confirmPassword"
-            placeholder="Confirm password"
+            // placeholder="Confirm password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
