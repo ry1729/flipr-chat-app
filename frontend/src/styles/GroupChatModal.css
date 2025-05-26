@@ -76,7 +76,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--primary-gradient);
+  background: var(--primary-gradient); /* Keeping original primary gradient for chips for distinction */
   color: var(--text-inverse);
   padding: 0.4rem 0.75rem;
   border-radius: 20px;
@@ -156,7 +156,7 @@
 }
 
 .selected-check {
-  background: var(--status-online);
+  background: var(--status-online); /* Uses a green for 'online status' */
   color: white;
   width: 24px;
   height: 24px;
@@ -179,7 +179,7 @@
   justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
-  border: 2px solid var(--primary-border);
+  border: 2px solid var(--primary-border); /* Assuming --primary-border exists or is primary-color */
 }
 
 .selectable-user-item:hover .add-btn {
@@ -235,14 +235,17 @@
   transform: translateY(-1px);
 }
 
+/* Primary Button (Create Group Button) */
 .btn-primary {
-  background: var(--primary-gradient);
-  color: var(--text-inverse);
+  background: var(--create-group-bg); /* Using the new variable for the main color */
+  color: var(--text-inverse); /* White text for contrast */
+  /* If you had a 'primary-gradient' here before, this will override it. */
 }
 
 .btn-primary:hover:not(:disabled) {
+  background: var(--create-group-hover-bg); /* Darker shade for hover */
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px var(--primary-light);
+  box-shadow: 0 5px 15px var(--create-group-shadow); /* Shadow matching the new color */
 }
 
 /* Animations */
