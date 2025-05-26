@@ -1,5 +1,28 @@
 /* src/styles/GroupChatModal.css */
+:root {
+  --primary-color: #007bff; /* Original primary blue */
+  --primary-light: rgba(0, 123, 255, 0.2); /* Light version for shadows, etc. */
+  --primary-gradient: linear-gradient(to right, #007bff, #0056b3); /* Original gradient */
 
+  /* New variables for the 'Create Group' button */
+  --create-group-bg: #28a745; /* A strong green for "success" */
+  --create-group-hover-bg: #218838; /* A darker green for hover */
+  --create-group-shadow: rgba(40, 167, 69, 0.4); /* Shadow color matching the green */
+
+  --text-inverse: #ffffff; /* White text for dark backgrounds */
+
+  /* ... other existing variables ... */
+  --text-primary: #333;
+  --text-muted: #666;
+  --bg-primary: #f8f9fa;
+  --bg-secondary: #e9ecef;
+  --bg-tertiary: #dee2e6;
+  --border-light: #ced4da;
+  --border-medium: #adb5bd;
+  --status-online: #28a745; /* Example: Keeping existing green for online status */
+  --hover-light: #e2e6ea;
+  --hover-medium: #d3dce3;
+}
 .group-chat-modal {
   max-width: 600px;
   width: 90vw;
