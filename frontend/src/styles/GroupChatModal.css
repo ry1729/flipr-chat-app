@@ -3,8 +3,10 @@
 .group-chat-modal {
   max-width: 600px;
   width: 90vw;
-  max-height: 80vh;
-  overflow-y: auto;
+  max-height: 80vh; /* Keeps the modal within 80% of viewport height */
+  overflow-y: auto; /* Allows the modal content to scroll internally if it exceeds max-height */
+  box-sizing: border-box; /* Ensure padding/border are included in width/height calculations */
+  padding: 20px; /* Add some default padding to the modal content */
 }
 
 .form-group {
@@ -55,6 +57,7 @@
   background: var(--bg-secondary);
   border-radius: 8px;
   border: 1px solid var(--border-light);
+  box-sizing: border-box; /* Ensure padding/border are included */
 }
 
 .selected-users h4 {
@@ -80,6 +83,7 @@
   font-size: 0.85rem;
   font-weight: 500;
   animation: slideIn 0.3s ease;
+  flex-shrink: 0; /* Prevent chips from shrinking too much and wrapping awkwardly */
 }
 
 .remove-user-btn {
@@ -108,6 +112,7 @@
   margin-bottom: 1.5rem;
   max-height: 300px;
   overflow-y: auto;
+  box-sizing: border-box; /* Ensure padding/border are included */
 }
 
 .search-results h4 {
@@ -147,6 +152,7 @@
   border-radius: 50%;
   font-weight: bold;
   transition: all 0.3s ease;
+  flex-shrink: 0; /* Prevent indicator from shrinking */
 }
 
 .selected-check {
@@ -197,6 +203,7 @@
   padding-top: 1rem;
   border-top: 1px solid var(--border-light);
   margin-top: 1rem;
+  flex-wrap: wrap; /* Ensure buttons wrap if horizontal space is very limited */
 }
 
 .btn {
@@ -208,6 +215,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   min-width: 100px;
+  box-sizing: border-box; /* Ensure padding/border are included */
 }
 
 .btn:disabled {
@@ -265,22 +273,49 @@
   .group-chat-modal {
     width: 95vw;
     max-height: 90vh;
+    padding: 15px; /* Slightly reduce padding on smaller screens */
   }
-  
+
   .selected-users-list {
     gap: 0.25rem;
   }
-  
+
   .selected-user-chip {
     font-size: 0.8rem;
     padding: 0.3rem 0.6rem;
   }
-  
+
   .modal-actions {
     flex-direction: column;
+    gap: 0.75rem; /* Reduce gap when buttons are stacked */
   }
-  
+
   .btn {
     width: 100%;
+    min-width: unset; /* Allow buttons to shrink below 100px when stacked */
+    padding: 0.6rem 1rem; /* Slightly reduce padding for stacked buttons */
+  }
+
+  /* Optional: Adjust search-results-section max-height if it becomes too large on very small phones */
+  .search-results-section {
+    max-height: 200px; /* Example: Reduce max-height for search results on very small screens */
+  }
+}
+
+@media (max-width: 480px) { /* Even smaller screens */
+  .group-chat-modal {
+    width: 98vw;
+    padding: 10px;
+  }
+  .form-input {
+    padding: 0.6rem 0.8rem;
+  }
+  .btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  .selected-user-chip {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
   }
 }

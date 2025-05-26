@@ -162,6 +162,7 @@
   margin-bottom: 2rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-light);
+  color: black;
 }
 
 .setting-section:last-child {
@@ -172,8 +173,9 @@
 .setting-section h3 {
   margin: 0 0 1rem 0;
   font-size: 1.1rem;
-  color: var(--text-primary);
+  /* color: var(--text-primary); */
   font-weight: 600;
+  color: black;
 }
 
 /* Rename Form */
