@@ -239,6 +239,7 @@
   transition: all 0.3s ease;
   min-width: 100px;
   box-sizing: border-box; /* Ensure padding/border are included */
+  background: black;
 }
 
 .btn:disabled {
