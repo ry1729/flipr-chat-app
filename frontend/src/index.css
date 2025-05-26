@@ -1,3 +1,5 @@
+/* src/index.css - MODIFIED */
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,7 +7,8 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Keep background-color for overall app fallback, but HomePage.css will set a gradient */
+  background-color: #242424; 
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -24,10 +27,9 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  min-height: 100vh; /* Keep this to ensure body takes full viewport height */
+  /* Do NOT add padding here, HomePage.css will manage page padding */
+  overflow-y: auto;
 }
 
 h1 {
@@ -69,37 +71,38 @@ button:focus-visible {
 
 /* /////////////////////////////////// */
 
-/* --- Global App Container (from previous CSS) --- */
+/* --- Global App Container --- */
 .App {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  /* REMOVED: min-height: 100vh; */ /* <-- THIS IS THE KEY CHANGE for Option 1 */
+  /* If you need .App to fill height for other layouts, manage it there or use flex-grow for HomePage */
 }
 
-/* --- Auth Pages (Register & Login) Styles (from previous CSS) --- */
-.auth-container {
-  /* ... existing styles ... */
-}
-/* ... rest of auth styles ... */
+/* --- Auth Pages (Register & Login) Styles --- */
+/* Keep these if they are used globally or if .auth-container isn't inside HomePage */
+/* .auth-container {
+  /* ... existing styles ... 
+} */
 
 
-/* --- Chat Page Layout (New/Updated Styles) --- */
+/* --- Chat Page Layout --- */
 .chat-page {
   display: flex;
-  flex-grow: 1; /* Allows it to take up available space */
-  overflow: hidden; /* Prevent horizontal scroll */
-  background-color: #f4f7f6; /* Consistent background */
+  flex-grow: 1;
+  overflow: hidden;
+  background-color: #f4f7f6;
 }
 
 .chat-sidebar {
-  flex: 0 0 300px; /* Fixed width sidebar */
-  background-color: #2c3e50; /* Dark sidebar background */
+  flex: 0 0 300px;
+  background-color: #2c3e50;
   color: #ecf0f1;
   padding: 20px;
   display: flex;
   flex-direction: column;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-  border-right: 1px solid #1a252f; /* Darker border for separation */
+  border-right: 1px solid #1a252f;
 }
 
 .sidebar-header {
@@ -118,7 +121,7 @@ button:focus-visible {
 }
 
 .logout-button {
-  background-color: #e74c3c; /* Red for logout */
+  background-color: #e74c3c;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -134,8 +137,8 @@ button:focus-visible {
 
 .chat-list {
   flex-grow: 1;
-  overflow-y: auto; /* Scrollable chat list */
-  padding-right: 5px; /* Space for scrollbar */
+  overflow-y: auto;
+  padding-right: 5px;
 }
 
 .chat-list-item {
@@ -143,7 +146,7 @@ button:focus-visible {
   flex-direction: column;
   padding: 12px 15px;
   margin-bottom: 8px;
-  background-color: #34495e; /* Darker background for list items */
+  background-color: #34495e;
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.1s ease;
@@ -156,15 +159,14 @@ button:focus-visible {
 }
 
 .chat-list-item.selected {
-  background-color: #007bff; /* Highlight selected chat */
+  background-color: #007bff;
   box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
   transform: translateY(-2px);
 }
 
 .latest-message-snippet {
   font-size: 0.8em;
-  color: #bdc3c7; /* Lighter text for snippet */
-  margin-top: 5px;
+  color: #bdc3c7;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -192,10 +194,10 @@ button:focus-visible {
 .message-area {
   flex-grow: 1;
   padding: 20px;
-  overflow-y: auto; /* Scrollable message area */
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px; /* Space between message bubbles */
+  gap: 15px;
 }
 
 .no-messages-placeholder,
@@ -211,53 +213,52 @@ button:focus-visible {
 
 .message-bubble-wrapper {
   display: flex;
-  /* Aligns messages to left or right */
 }
 
 .message-bubble-wrapper.self {
-  justify-content: flex-end; /* Align self messages to the right */
+  justify-content: flex-end;
 }
 
 .message-bubble-wrapper.other {
-  justify-content: flex-start; /* Align other messages to the left */
+  justify-content: flex-start;
 }
 
 .message-bubble {
-  max-width: 70%; /* Limit bubble width */
+  max-width: 70%;
   padding: 10px 15px;
-  border-radius: 18px; /* More rounded corners */
-  word-wrap: break-word; /* Break long words */
+  border-radius: 18px;
+  word-wrap: break-word;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  position: relative; /* For timestamp positioning */
+  position: relative;
 }
 
 .message-bubble-wrapper.self .message-bubble {
-  background-color: #dcf8c6; /* Light green for self messages */
+  background-color: #dcf8c6;
   color: #333;
-  border-bottom-right-radius: 4px; /* Pointy corner for self */
+  border-bottom-right-radius: 4px;
 }
 
 .message-bubble-wrapper.other .message-bubble {
-  background-color: #e6e6e6; /* Light grey for other messages */
+  background-color: #e6e6e6;
   color: #333;
-  border-bottom-left-radius: 4px; /* Pointy corner for other */
+  border-bottom-left-radius: 4px;
 }
 
 .message-sender {
   font-weight: bold;
   font-size: 0.9em;
   margin-bottom: 5px;
-  color: #0056b3; /* Blue for sender name */
+  color: #0056b3;
 }
 
 .message-bubble-wrapper.self .message-sender {
-  color: #218838; /* Darker green for self sender name */
+  color: #218838;
 }
 
 .message-content {
   margin: 0;
   font-size: 1em;
-  padding-bottom: 5px; /* Space for timestamp */
+  padding-bottom: 5px;
 }
 
 .message-timestamp {
@@ -269,10 +270,10 @@ button:focus-visible {
 
 .message-image {
   max-width: 100%;
-  max-height: 250px; /* Limit image height */
+  max-height: 250px;
   border-radius: 8px;
   margin-top: 5px;
-  object-fit: contain; /* Ensure image fits without cropping */
+  object-fit: contain;
 }
 
 .message-video {
@@ -322,7 +323,7 @@ button:focus-visible {
   flex-grow: 1;
   padding: 12px 15px;
   border: 1px solid #ddd;
-  border-radius: 25px; /* Pill shape */
+  border-radius: 25px;
   font-size: 1em;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -334,13 +335,13 @@ button:focus-visible {
 }
 
 .file-upload-button {
-  background-color: #6c757d; /* Grey for attachment */
+  background-color: #6c757d;
   color: white;
   padding: 12px 15px;
   border-radius: 25px;
   cursor: pointer;
   font-size: 1.2em;
-  line-height: 1; /* Adjust for icon alignment */
+  line-height: 1;
   transition: background-color 0.3s ease;
   display: flex;
   align-items: center;
@@ -352,7 +353,7 @@ button:focus-visible {
 }
 
 .send-button {
-  background-color: #007bff; /* Blue for send button */
+  background-color: #007bff;
   color: white;
   border: none;
   padding: 12px 20px;
@@ -384,8 +385,8 @@ button:focus-visible {
     flex: none;
     width: 100%;
     padding: 15px;
-    height: 200px; /* Fixed height for sidebar on mobile */
-    overflow-y: auto; /* Make sidebar scrollable */
+    height: 200px;
+    overflow-y: auto;
   }
 
   .chat-header h3 {
@@ -397,27 +398,26 @@ button:focus-visible {
   }
 
   .message-input-area {
-    flex-wrap: wrap; /* Allow input area items to wrap */
+    flex-wrap: wrap;
     padding: 10px 15px;
   }
 
   .message-input {
-    flex-basis: 100%; /* Input takes full width */
-    margin-bottom: 10px; /* Space below input */
+    flex-basis: 100%;
+    margin-bottom: 10px;
   }
 
   .file-upload-button,
   .send-button {
-    flex-grow: 1; /* Buttons share remaining space */
+    flex-grow: 1;
     padding: 10px 15px;
   }
 }
 
-/* --- React Toastify overrides (Optional) --- */
-/* (from previous CSS) */
-.Toastify__toast-container {
-  /* top, right, bottom, left properties */
-}
+/* --- React Toastify overrides --- */
+/* .Toastify__toast-container {
+  /* top, right, bottom, left properties 
+} */
 
 .Toastify__toast--success {
   background-color: #28a745;
@@ -427,9 +427,7 @@ button:focus-visible {
   background-color: #dc3545;
 }
 
-/* src/index.css */
-/* ... existing styles ... */
-
+/* Not Found Page Styles */
 .not-found-container {
   display: flex;
   flex-direction: column;
@@ -444,7 +442,7 @@ button:focus-visible {
 .not-found-container h1 {
   font-size: 6em;
   margin-bottom: 10px;
-  color: #dc3545; /* Red color */
+  color: #dc3545;
 }
 
 .not-found-container p {
