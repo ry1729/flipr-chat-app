@@ -19,7 +19,7 @@ connectDB();
 
 // CORS Configuration (Crucial for frontend-backend communication)
 // It's good practice to allow your specific frontend URL
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'; // Fallback for development
+const frontendUrl = process.env.FRONTEND_URL || 'https://flipr-chat-app-fe.onrender.com/'; // Fallback for development
 const corsOptions = {
     origin: frontendUrl, // Replace with your actual frontend URL (from .env)
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
