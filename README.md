@@ -132,12 +132,12 @@ You can try out the live version of the Flipr Chat App deployed on **Render**:
 ## 🧑‍💻 Author
 
 **Riya Chitnis** – Developer  
-[GitHub]((https://github.com/ry1729))  
-[LinkedIn]((https://www.linkedin.com/in/riya-chitnis-756313287/))
+[GitHub]([https://github.com/ry1729])  
+[LinkedIn]([https://www.linkedin.com/in/riya-chitnis-756313287/])
 
 **Pranathi Balabathuni** – Developer  
-[GitHub]((https://github.com/pranathibalabathuni))  
-[LinkedIn]((https://www.linkedin.com/in/pranathi-balabathuni-47659a305/))
+[GitHub]([https://github.com/pranathibalabathuni])  
+[LinkedIn]([https://www.linkedin.com/in/pranathi-balabathuni-47659a305/])
 
 ---
 
